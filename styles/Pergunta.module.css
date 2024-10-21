@@ -1,0 +1,107 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom, #4b0082, #800080); /* Gradiente roxo escuro */
+}
+
+.sectionContainer {
+  width: 60%; /* Largura do container das seções */
+  margin-top: 80px; /* Espaço para a navbar fixa */
+  margin-bottom: 30px;
+  background-color: rgba(255, 255, 255, 0.9); /* Fundo branco com transparência */
+  padding: 20px; /* Espaçamento interno */
+  border-radius: 8px; /* Bordas arredondadas */
+}
+
+.section {
+  margin: 20px auto; /* Centraliza horizontalmente */
+  padding: 20px; /* Mantém o preenchimento */
+  background-color: rgba(255, 255, 255, 0.9); /* Fundo branco com transparência */
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cardSection {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Centraliza os cards */
+  gap: 10px;
+}
+
+.card {
+  width: 100px; /* Definindo uma largura fixa */
+  height: 100px; /* Definindo uma altura fixa */
+  margin: 5px; /* Ajustando a margem para um espaçamento menor */
+  text-align: center;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: transform 0.3s ease; /* Adicionando transição para a transformação */
+}
+
+.card.selected {
+  border: 5px solid #4b0082; /* Adicionando borda roxa escura */
+  transform: scale(1.15); /* Aumenta o tamanho do card selecionado em 15% */
+}
+
+.cardImage {
+  width: 100%; /* Faz a imagem ocupar toda a largura do card */
+  height: 100%; /* Faz a imagem ocupar toda a altura do card */
+  object-fit: cover; /* Garante que a imagem não seja distorcida */
+  border-radius: 4px; /* Removendo bordas arredondadas */
+}
+
+.input {
+  width: 100%;
+  background-color: #f8f9fa;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.gptResponse {
+  background-color: #f0f8ff; /* Fundo claro para a resposta */
+  border-radius: 8px; /* Bordas arredondadas */
+  padding: 15px; /* Espaçamento interno */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Sombra para efeito de elevação */
+  margin-top: 20px; /* Margem superior para espaçamento */
+  min-height: 100px; /* Altura mínima para evitar movimentação */
+}
+
+/* Estilos da Navbar */
+.navbar {
+  position: fixed; /* Fixa a navbar no topo */
+  top: 0; /* Alinha ao topo */
+  left: 0; /* Alinha à esquerda */
+  right: 0; /* Alinha à direita */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px 20px;
+  background-color: rgba(255, 255, 255, 0.8); /* Fundo branco com transparência */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  margin-bottom: 5px; /* Adicionando margem inferior */
+  z-index: 1000; /* Garante que a navbar fique acima de outros elementos */
+}
+
+.navbarLeft h2 {
+  margin: 0;
+  color: #333; /* Cor do texto da navbar */
+}
+
+.navbarRight {
+  display: flex;
+  align-items: center;
+}
+
+/* Media Queries para Responsividade */
+@media (max-width: 768px) {
+  .sectionContainer {
+    width: 90%; /* Ajusta a largura do container em telas menores */
+  }
+}

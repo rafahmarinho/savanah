@@ -1,0 +1,10 @@
+.footer {
+  background: linear-gradient(135deg, #78449c, #9207d3); /* Gradiente do roxo para um tom mais claro */
+  color: white;
+  text-align: center;
+  padding: 20px;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  font-style: italic; /* Texto em itálico */
+}
