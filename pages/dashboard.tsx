@@ -6,6 +6,7 @@ import solarizedlight from 'react-syntax-highlighter/dist/cjs/styles/prism/solar
 import styles from "../styles/Pergunta.module.css"; // Atualizando a importação para o novo módulo CSS
 import { getAuth, signOut } from "firebase/auth"; // Importando signOut
 import { useRouter } from 'next/router'; // Importando useRouter para redirecionamento
+import Loader from '../components/Loader'; // Importando o componente Loader
 
 export default function Dashboard() {
   const router = useRouter(); // Inicializando o roteador
@@ -13,19 +14,20 @@ export default function Dashboard() {
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]); // Estado para linguagens selecionadas
   const [userQuestion, setUserQuestion] = useState<string>(""); // Estado para a pergunta do usuário
   const [gptResponse, setGptResponse] = useState<string | null>(null); // Estado para a resposta do ChatGPT
+  const [loading, setLoading] = useState<boolean>(false); // Estado para controle do loader
 
   useEffect(() => {
     const auth = getAuth();
     const user = auth.currentUser; // Obtendo o usuário atual
 
     if (!user) {
-      // Se não houver usuário autenticado, redireciona para a página de login
-      router.push('/login');
+      // Se não houver usuário autenticado, redireciona para a página home
+      router.push('/');
     } else {
       // Invalida o token após 15 minutos
       const timeout = setTimeout(() => {
         signOut(auth); // Desloga o usuário
-        router.push('/login'); // Redireciona para a página de login
+        router.push('/'); // Redireciona para a página home
       }, 15 * 60 * 1000); // 15 minutos em milissegundos
 
       return () => clearTimeout(timeout); // Limpa o timeout ao desmontar o componente
@@ -66,6 +68,8 @@ export default function Dashboard() {
   const handleQuestionSubmit = async (prompt: string) => {
     if (!prompt) return;
 
+    setLoading(true); // Inicia o loader
+
     try {
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
@@ -88,6 +92,8 @@ export default function Dashboard() {
     } catch (error) {
       console.error("Erro ao chamar a API:", error);
       setGptResponse("Desculpe, ocorreu um erro ao buscar a resposta.");
+    } finally {
+      setLoading(false); // Finaliza o loader
     }
   };
 
@@ -170,9 +176,11 @@ export default function Dashboard() {
               ))}
             </div>
           </section>
-          {gptResponse && ( // Condição para exibir a seção de resposta
+          {loading ? ( // Exibe o loader enquanto carrega
+            <Loader />
+          ) : gptResponse && ( // Condição para exibir a seção de resposta
             <section className={`${styles.section} ${styles.gptResponse}`}>
-              <h2>Resposta do ChatGPT:</h2>
+              <h2>Resposta via Savanah AI:</h2>
               {formatResponse(gptResponse)} {/* Formata a resposta */}
             </section>
           )}

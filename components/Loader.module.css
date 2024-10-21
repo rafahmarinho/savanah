@@ -1,0 +1,65 @@
+.container {
+    position: fixed; /* Mudei para fixed para ocupar toda a tela */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; /* Altura total da tela */
+    display: flex; /* Usando flexbox para centralização */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    margin: 0; /* Removendo margens */
+    backdrop-filter: blur(5px); /* Efeito de desfoque no fundo */
+}
+
+.lion {
+    height: 30%; /* Reduzindo a altura para 50% */
+    width: 35%; /* Reduzindo a largura para 50% */
+    margin: auto;
+    stroke-width: 8px;
+    fill: transparent;
+    stroke-dashoffset: -3350;
+    stroke-dasharray: 3350;
+    animation: lion-animation 7s infinite, rainbow-animation 3s linear infinite; /* Adicionando animação de arco-íris */
+}
+
+@keyframes lion-animation {
+    0% {
+        stroke-dashoffset: -3350;
+    }
+    35% {
+        stroke-dashoffset: 0;   
+    }
+    65% {
+        stroke-dashoffset: 0;
+    }
+    100% {
+        stroke-dashoffset: -3350;
+    }
+}
+
+@keyframes rainbow-animation {
+    0% {
+        stroke: red;
+    }
+    14% {
+        stroke: orange;
+    }
+    28% {
+        stroke: yellow;
+    }
+    42% {
+        stroke: green;
+    }
+    57% {
+        stroke: blue;
+    }
+    71% {
+        stroke: indigo;
+    }
+    85% {
+        stroke: violet;
+    }
+    100% {
+        stroke: red;
+    }
+}
