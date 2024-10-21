@@ -4,15 +4,42 @@ import { useState, useEffect } from "react"; // Importando useState e useEffect
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'; // Importando o realce de sintaxe
 import solarizedlight from 'react-syntax-highlighter/dist/cjs/styles/prism/solarizedlight'; // Estilo de realce
 import styles from "../styles/Pergunta.module.css"; // Atualizando a importação para o novo módulo CSS
+import { getAuth, signOut } from "firebase/auth"; // Importando signOut
+import { useRouter } from 'next/router'; // Importando useRouter para redirecionamento
 
-export default function Pergunta() {
+export default function Dashboard() {
+  const router = useRouter(); // Inicializando o roteador
   const [selectedPipeline, setSelectedPipeline] = useState<string | null>(null); // Estado para pipeline selecionada
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]); // Estado para linguagens selecionadas
   const [userQuestion, setUserQuestion] = useState<string>(""); // Estado para a pergunta do usuário
   const [gptResponse, setGptResponse] = useState<string | null>(null); // Estado para a resposta do ChatGPT
 
-  const handleLogout = () => {
-    alert("Você saiu!");
+  useEffect(() => {
+    const auth = getAuth();
+    const user = auth.currentUser; // Obtendo o usuário atual
+
+    if (!user) {
+      // Se não houver usuário autenticado, redireciona para a página de login
+      router.push('/login');
+    } else {
+      // Invalida o token após 15 minutos
+      const timeout = setTimeout(() => {
+        signOut(auth); // Desloga o usuário
+        router.push('/login'); // Redireciona para a página de login
+      }, 15 * 60 * 1000); // 15 minutos em milissegundos
+
+      return () => clearTimeout(timeout); // Limpa o timeout ao desmontar o componente
+    }
+  }, [router]); // Executa o efeito ao montar o componente
+
+  const handleLogout = async () => {
+    const auth = getAuth();
+    try {
+      await signOut(auth); // Desloga o usuário
+      window.location.href = '/'; // Redireciona para a página inicial
+    } catch (error) {
+      alert("Erro ao sair: " + (error as Error).message); // Corrigido para tratar error como Error
+    }
   };
 
   const handlePipelineSelect = (pipeline: string) => {
@@ -38,8 +65,6 @@ export default function Pergunta() {
 
   const handleQuestionSubmit = async (prompt: string) => {
     if (!prompt) return;
-
-    console.log("Chave da API:", process.env.NEXT_PUBLIC_OPENAI_API_KEY); // Verifica se a chave da API está sendo lida
 
     try {
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -85,8 +110,8 @@ export default function Pergunta() {
   return (
     <>
       <Head>
-        <title>Pergunta</title>
-        <meta name="description" content="Página para fazer uma pergunta" />
+        <title>Dashboard</title>
+        <meta name="description" content="Página do Dashboard" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

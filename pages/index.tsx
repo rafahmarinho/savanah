@@ -15,7 +15,9 @@ import {
 } from "@chakra-ui/react";
 import styles from "../styles/Home.module.css"; // Corrigindo o caminho da importação
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth } from "firebase/auth"; // Importando apenas o necessário
+import LoginModal from "../components/LoginModal"; // Importando o LoginModal
+import RegisterModal from "../components/RegisterModal"; // Importando o RegisterModal
 
 // Configurações do Firebase
 const firebaseConfig = {
@@ -33,24 +35,15 @@ const auth = getAuth(app);
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [isLoginOpen, setIsLoginOpen] = useState(false); // Estado para o modal de login
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false); // Estado para o modal de registro
 
   const onOpen = () => setIsOpen(true);
   const onClose = () => setIsOpen(false);
-
-  const handleCreateAccount = async () => {
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      alert("Conta criada com sucesso!");
-      onClose();
-    } catch (error) {
-      // Verifica se o erro possui uma mensagem
-      const errorMessage = (error as Error).message || "Erro desconhecido";
-      alert(errorMessage);
-    }
-  };
+  const onLoginOpen = () => setIsLoginOpen(true); // Função para abrir o modal de login
+  const onLoginClose = () => setIsLoginOpen(false); // Função para fechar o modal de login
+  const onRegisterOpen = () => setIsRegisterOpen(true); // Função para abrir o modal de registro
+  const onRegisterClose = () => setIsRegisterOpen(false); // Função para fechar o modal de registro
 
   return (
     <>
@@ -66,58 +59,15 @@ export default function Home() {
           Integrações ágeis de maneira inteligente.
         </p>
         <div className={styles.buttonContainer}>
-          <Button onClick={onOpen} colorScheme="blue">
+          <Button onClick={onRegisterOpen} colorScheme="blue">
             Criar Conta
           </Button>
-          <Button colorScheme="gray">Login</Button>
-          <Button colorScheme="teal" onClick={() => window.location.href='/pergunta'}>
-            Fazer uma pergunta
-          </Button>
+          <Button colorScheme="gray" onClick={onLoginOpen}>Login</Button> {/* Abre o modal de login */}
         </div>
 
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Criar Conta</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <FormControl>
-                <FormLabel>Nome</FormLabel>
-                <Input 
-                  placeholder="Digite seu nome" 
-                  value={name} 
-                  onChange={(e) => setName(e.target.value)} 
-                />
-              </FormControl>
-              <FormControl mt={4}>
-                <FormLabel>Email</FormLabel>
-                <Input 
-                  type="email" 
-                  placeholder="Digite seu email" 
-                  value={email} 
-                  onChange={(e) => setEmail(e.target.value)} 
-                />
-              </FormControl>
-              <FormControl mt={4}>
-                <FormLabel>Senha</FormLabel>
-                <Input 
-                  type="password" 
-                  placeholder="Digite sua senha" 
-                  value={password} 
-                  onChange={(e) => setPassword(e.target.value)} 
-                />
-              </FormControl>
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={handleCreateAccount}>
-                Criar
-              </Button>
-              <Button variant="ghost" onClick={onClose}>Cancelar</Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        <RegisterModal isOpen={isRegisterOpen} onClose={onRegisterClose} /> {/* Renderiza o modal de registro */}
+        <LoginModal isOpen={isLoginOpen} onClose={onLoginClose} /> {/* Renderiza o modal de login */}
       </div>
     </>
   );
 }
-
