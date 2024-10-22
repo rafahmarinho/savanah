@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Button } from "@chakra-ui/react";
+import { Button, Alert, AlertIcon } from "@chakra-ui/react"; // Importando Alert e AlertIcon
 import { useState, useEffect } from "react"; // Importando useState e useEffect
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'; // Importando o realce de sintaxe
 import solarizedlight from 'react-syntax-highlighter/dist/cjs/styles/prism/solarizedlight'; // Estilo de realce
@@ -15,6 +15,8 @@ export default function Dashboard() {
   const [userQuestion, setUserQuestion] = useState<string>(""); // Estado para a pergunta do usuário
   const [gptResponse, setGptResponse] = useState<string | null>(null); // Estado para a resposta do ChatGPT
   const [loading, setLoading] = useState<boolean>(false); // Estado para controle do loader
+  const [selectedSolution, setSelectedSolution] = useState<string | null>(null); // Estado para solução selecionada
+  const [showWarning, setShowWarning] = useState<boolean>(false); // Estado para controle do aviso
 
   useEffect(() => {
     const auth = getAuth();
@@ -56,6 +58,17 @@ export default function Dashboard() {
         return [...prev, language]; // Adiciona a nova linguagem
       }
     });
+  };
+
+  const handleSolutionSelect = (solution: string) => {
+    setSelectedSolution(solution); // Atualiza a solução selecionada
+    if (solution === 'veracode') {
+      setShowWarning(false); // Esconde o aviso
+      setGptResponse(null); // Limpa a resposta do ChatGPT
+    } else if (solution === 'sd-elements' || solution === 'senhasegura') {
+      setShowWarning(true); // Mostra o aviso
+      setGptResponse(null); // Limpa a resposta do ChatGPT
+    }
   };
 
   useEffect(() => {
@@ -134,48 +147,83 @@ export default function Dashboard() {
       <div className={styles.container}>
         <div className={styles.sectionContainer}> {/* Novo container para as seções */}
           <section className={styles.section}>
-            <h2>Qual é a sua pipeline?</h2>
+            <h2>Escolha uma de nossas soluções:</h2>
             <div className={styles.cardSection}>
               <div
-                className={`${styles.card} ${selectedPipeline === 'azure-devops' ? styles.selected : ''}`}
-                onClick={() => handlePipelineSelect('azure-devops')}
+                className={`${styles.card} ${selectedSolution === 'veracode' ? styles.selected : ''}`}
+                onClick={() => handleSolutionSelect('veracode')}
               >
-                <img src="/img/pipeline/azure-devops.jpg" alt="Azure DevOps" className={styles.cardImage} />
+                <img src="/img/solutions/veracode.jpg" alt="Veracode" className={styles.cardImage} />
               </div>
               <div
-                className={`${styles.card} ${selectedPipeline === 'gitlab-cicd' ? styles.selected : ''}`}
-                onClick={() => handlePipelineSelect('gitlab-cicd')}
+                className={`${styles.card} ${selectedSolution === 'sd-elements' ? styles.selected : ''}`}
+                onClick={() => handleSolutionSelect('sd-elements')}
               >
-                <img src="/img/pipeline/gitlab-cicd.png" alt="GitLab CI/CD" className={styles.cardImage} />
+                <img src="/img/solutions/sd-elements.jpg" alt="SD Elements" className={styles.cardImage} />
               </div>
               <div
-                className={`${styles.card} ${selectedPipeline === 'jenkins' ? styles.selected : ''}`}
-                onClick={() => handlePipelineSelect('jenkins')}
+                className={`${styles.card} ${selectedSolution === 'senhasegura' ? styles.selected : ''}`}
+                onClick={() => handleSolutionSelect('senhasegura')}
               >
-                <img src="/img/pipeline/jenkins.jpg" alt="Jenkins" className={styles.cardImage} />
-              </div>
-              <div
-                className={`${styles.card} ${selectedPipeline === 'github-actions' ? styles.selected : ''}`}
-                onClick={() => handlePipelineSelect('github-actions')}
-              >
-                <img src="/img/pipeline/github-actions.png" alt="GitHub Actions" className={styles.cardImage} />
+                <img src="/img/solutions/senhasegura.png" alt="senhasegura" className={styles.cardImage} />
               </div>
             </div>
           </section>
-          <section className={styles.section}>
-            <h2>Quais linguagens de programação contém em suas aplicações?</h2>
-            <div className={styles.cardSection}>
-              {["dotNet", "java", "js", "nodejs", "php"].map((language) => (
-                <div
-                  key={language}
-                  className={`${styles.card} ${selectedLanguages.includes(language) ? styles.selected : ''}`} // Adiciona classe se selecionado
-                  onClick={() => handleLanguageSelect(language)}
-                >
-                  <img src={`/img/script-languages/${language}.png`} alt={language} className={styles.cardImage} />
+          {selectedSolution === 'veracode' && ( // Renderiza o select de pipeline e linguagens se Veracode for selecionado
+            <>
+              <section className={styles.section}>
+                <h2>Qual é a sua pipeline?</h2>
+                <div className={styles.cardSection}>
+                  <div
+                    className={`${styles.card} ${selectedPipeline === 'azure-devops' ? styles.selected : ''}`}
+                    onClick={() => handlePipelineSelect('azure-devops')}
+                  >
+                    <img src="/img/pipeline/azure-devops.jpg" alt="Azure DevOps" className={styles.cardImage} />
+                  </div>
+                  <div
+                    className={`${styles.card} ${selectedPipeline === 'gitlab-cicd' ? styles.selected : ''}`}
+                    onClick={() => handlePipelineSelect('gitlab-cicd')}
+                  >
+                    <img src="/img/pipeline/gitlab-cicd.png" alt="GitLab CI/CD" className={styles.cardImage} />
+                  </div>
+                  <div
+                    className={`${styles.card} ${selectedPipeline === 'jenkins' ? styles.selected : ''}`}
+                    onClick={() => handlePipelineSelect('jenkins')}
+                  >
+                    <img src="/img/pipeline/jenkins.jpg" alt="Jenkins" className={styles.cardImage} />
+                  </div>
+                  <div
+                    className={`${styles.card} ${selectedPipeline === 'github-actions' ? styles.selected : ''}`}
+                    onClick={() => handlePipelineSelect('github-actions')}
+                  >
+                    <img src="/img/pipeline/github-actions.png" alt="GitHub Actions" className={styles.cardImage} />
+                  </div>
                 </div>
-              ))}
-            </div>
-          </section>
+              </section>
+              <section className={styles.section}>
+                <h2>Quais linguagens de programação contém em suas aplicações?</h2>
+                <div className={styles.cardSection}>
+                  {["dotNet", "java", "js", "nodejs", "php"].map((language) => (
+                    <div
+                      key={language}
+                      className={`${styles.card} ${selectedLanguages.includes(language) ? styles.selected : ''}`} // Adiciona classe se selecionado
+                      onClick={() => handleLanguageSelect(language)}
+                    >
+                      <img src={`/img/script-languages/${language}.png`} alt={language} className={styles.cardImage} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </>
+          )}
+          {showWarning && ( // Renderiza o aviso se SD Elements ou senhasegura forem selecionados
+            <section className={styles.section}>
+              <Alert status="warning">
+                <AlertIcon />
+                Estamos desenvolvendo essa funcionalidade. Em breve, estará disponível!
+              </Alert>
+            </section>
+          )}
           {loading ? ( // Exibe o loader enquanto carrega
             <Loader />
           ) : gptResponse && ( // Condição para exibir a seção de resposta
