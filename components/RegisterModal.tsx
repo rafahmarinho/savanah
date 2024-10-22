@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../pages/api/firebaseConfig';
 import {
   Modal,
   ModalOverlay,
@@ -29,7 +30,6 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // Estado para a mensagem de erro
   const router = useRouter();
-  const auth = getAuth();
 
   const handleRegister = async () => {
     try {

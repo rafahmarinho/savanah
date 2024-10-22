@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../pages/api/firebaseConfig';
 import {
   Modal,
   ModalOverlay,
@@ -30,7 +31,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // Estado para a mensagem de erro
   const [showPopup, setShowPopup] = useState<boolean>(false); // Estado para o pop-up
   const router = useRouter();
-  const auth = getAuth();
+
 
   const handleLogin = async () => {
     try {

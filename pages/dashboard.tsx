@@ -4,7 +4,8 @@ import { useState, useEffect } from "react"; // Importando useState e useEffect
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'; // Importando o realce de sintaxe
 import solarizedlight from 'react-syntax-highlighter/dist/cjs/styles/prism/solarizedlight'; // Estilo de realce
 import styles from "../styles/Pergunta.module.css"; // Atualizando a importação para o novo módulo CSS
-import { getAuth, signOut } from "firebase/auth"; // Importando signOut
+import { signOut } from "firebase/auth"; // Importando signOut
+import { auth } from './api/firebaseConfig';
 import { useRouter } from 'next/router'; // Importando useRouter para redirecionamento
 import Loader from '../components/Loader'; // Importando o componente Loader
 
@@ -19,7 +20,6 @@ export default function Dashboard() {
   const [showWarning, setShowWarning] = useState<boolean>(false); // Estado para controle do aviso
 
   useEffect(() => {
-    const auth = getAuth();
     const user = auth.currentUser; // Obtendo o usuário atual
 
     if (!user) {
@@ -37,7 +37,6 @@ export default function Dashboard() {
   }, [router]); // Executa o efeito ao montar o componente
 
   const handleLogout = async () => {
-    const auth = getAuth();
     try {
       await signOut(auth); // Desloga o usuário
       window.location.href = '/'; // Redireciona para a página inicial
