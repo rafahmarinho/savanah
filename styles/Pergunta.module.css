@@ -3,6 +3,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  min-height: 100vh;
   background: linear-gradient(to bottom, #4b0082, #800080); /* Gradiente roxo escuro */
 }
 

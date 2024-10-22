@@ -18,6 +18,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth"; // Importando apenas o necessário
 import LoginModal from "../components/LoginModal"; // Importando o LoginModal
 import RegisterModal from "../components/RegisterModal"; // Importando o RegisterModal
+import Lion from "../components/Lion"; // Importando o componente Lion
 
 // Configurações do Firebase
 const firebaseConfig = {
@@ -54,7 +55,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className={styles.container}>
-        <h1 className={styles.title}>Bem-vindo à Savanah 🦁</h1>
+        <h1 className={styles.title}>Bem-vindo à Savanah</h1>
+        <Lion /> {/* Adicionando o componente Lion aqui */}
         <p className={styles.description}>
           Integrações ágeis de maneira inteligente.
         </p>
@@ -62,11 +64,11 @@ export default function Home() {
           <Button onClick={onRegisterOpen} colorScheme="blue">
             Criar Conta
           </Button>
-          <Button colorScheme="gray" onClick={onLoginOpen}>Login</Button> {/* Abre o modal de login */}
+          <Button colorScheme="gray" onClick={onLoginOpen}>Login</Button>
         </div>
 
-        <RegisterModal isOpen={isRegisterOpen} onClose={onRegisterClose} /> {/* Renderiza o modal de registro */}
-        <LoginModal isOpen={isLoginOpen} onClose={onLoginClose} /> {/* Renderiza o modal de login */}
+        <RegisterModal isOpen={isRegisterOpen} onClose={onRegisterClose} />
+        <LoginModal isOpen={isLoginOpen} onClose={onLoginClose} />
       </div>
     </>
   );

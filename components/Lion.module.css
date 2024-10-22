@@ -1,0 +1,53 @@
+
+.lion {
+  height: 10%; /* Ajustando a altura para 50% */
+  width: 15%; /* Ajustando a largura para 50% */
+  margin: 0;
+  stroke-width: 8px;
+  fill: transparent;
+  stroke-dashoffset: -3350;
+  stroke-dasharray: 3350;
+  animation: lion-animation 3s infinite, rainbow-animation 5s linear infinite; /* Adicionando animação de arco-íris */
+}
+
+@keyframes lion-animation {
+  0% {
+    stroke-dashoffset: -3350;
+  }
+  35% {
+    stroke-dashoffset: 0;
+  }
+  65% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -3350;
+  }
+}
+
+@keyframes rainbow-animation {
+  0% {
+    stroke: red;
+  }
+  14% {
+    stroke: orange;
+  }
+  28% {
+    stroke: yellow;
+  }
+  42% {
+    stroke: green;
+  }
+  57% {
+    stroke: rgb(0, 204, 255);
+  }
+  71% {
+    stroke: rgb(255, 6, 193);
+  }
+  85% {
+    stroke: rgb(177, 0, 44);
+  }
+  100% {
+    stroke: red;
+  }
+}
