@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../pages/api/firebaseConfig';
@@ -18,6 +18,7 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
+  Spinner, // Importando o Spinner do Chakra UI
 } from "@chakra-ui/react"; // Importando componentes do Chakra UI
 
 interface LoginModalProps {
@@ -30,10 +31,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // Estado para a mensagem de erro
   const [showPopup, setShowPopup] = useState<boolean>(false); // Estado para o pop-up
+  const [loading, setLoading] = useState<boolean>(false); // Estado para o loader
   const router = useRouter();
 
-
   const handleLogin = async () => {
+    setLoading(true); // Ativa o loader
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/dashboard'); // Alterado para redirecionar para /dashboard
@@ -43,6 +45,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       setTimeout(() => {
         setShowPopup(false); // Oculta o pop-up após 5 segundos
       }, 5000);
+    } finally {
+      setLoading(false); // Desativa o loader após a tentativa de login
     }
   };
 
@@ -62,27 +66,33 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               <AlertDescription>{errorMessage}</AlertDescription>
             </Alert>
           )}
-          <FormControl>
-            <FormLabel>Email:</FormLabel>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </FormControl>
-          <FormControl mt={4}>
-            <FormLabel>Senha:</FormLabel>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </FormControl>
+          {loading ? ( // Exibe o loader se loading for verdadeiro
+            <Spinner size="lg" />
+          ) : (
+            <>
+              <FormControl>
+                <FormLabel>Email:</FormLabel>
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </FormControl>
+              <FormControl mt={4}>
+                <FormLabel>Senha:</FormLabel>
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </FormControl>
+            </>
+          )}
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={handleLogin}>
+          <Button colorScheme="blue" mr={3} onClick={handleLogin} isLoading={loading}>
             Entrar
           </Button>
           <Button variant="ghost" onClick={onClose}>Cancelar</Button>
