@@ -9,7 +9,7 @@ variables:
   - name: veracodeAppProfile
     value: '$(Build.DefinitionName)'
   - name: caminhoPacote
-    value: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    value: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)'
 
 steps:
 - task: CmdLine@2
@@ -22,7 +22,6 @@ steps:
     script: |
       curl -fsS https://tools.veracode.com/veracode-cli/install | sh
       export PATH="/home/vsts/work/1/s/:$PATH"
-      veracode configure --api-id "$(APIID)" --secret-key "$(APIKEY)"
       veracode package --source . --output $(caminhoPacote) --trust
   displayName: 'Veracode Auto-Package'
 
