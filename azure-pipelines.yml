@@ -59,7 +59,7 @@ steps:
     filepath: '$(analisysPack)'
     createSandBox: false
     createProfile: true
-    importResults: true
+    importResults: false
     failBuildOnPolicyFail: false
   displayName: 'Veracode SAST'
 
