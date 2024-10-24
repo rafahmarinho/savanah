@@ -6,6 +6,10 @@ pool:
 
 variables:
   - group: 'Veracode Api Key'
+  - name: veracodeAppProfile
+    value: '$(Build.DefinitionName)'
+  - name: caminhoPacote
+    value: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
 
 steps:
 - task: CmdLine@2
