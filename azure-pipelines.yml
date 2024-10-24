@@ -25,6 +25,8 @@ steps:
       export PATH="/home/vsts/work/1/s/:$PATH"
       veracode package --source . --output $(srcPack) --trust
       mv $(srcPack)/*zip $(srcPack)/analisys-pack.zip
+      echo('Arquivo final para analise: $(analisysPack)')
+      ls $(srcPack)
   displayName: 'Veracode Auto-Package'
 
 - task: CmdLine@2
@@ -34,13 +36,6 @@ steps:
       curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan --update-advisor --allow-dirty
   displayName: 'Veracode SCA'
   continueOnError: true
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(caminhoPacote)'
-    ArtifactName: 'VeracodeArtifact'
-    publishLocation: 'Container'
-  displayName: 'Publish Artifact for Veracode Scan'
 
 - script: |
     curl -O -L https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
