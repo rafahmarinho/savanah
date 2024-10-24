@@ -61,7 +61,7 @@ steps:
     apiKey: '$(APIKEY)'
     veracodeAppProfile: '$(veracodeAppProfile)'
     version: '$(build.buildNumber)'
-    filepath: '$(caminhoPacote)'
+    filepath: '$(caminhoPacote)veracode-auto-pack-s-js.zip'
     createSandBox: false
     createProfile: true
     failTheBuildIfVeracodeScanDidNotInitiate: false
