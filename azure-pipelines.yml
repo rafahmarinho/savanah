@@ -25,7 +25,7 @@ steps:
       export PATH="/home/vsts/work/1/s/:$PATH"
       veracode package --source . --output $(srcPack) --trust
       ls -la $(srcPack)
-      mv $(srcPack)/*.zip $(srcPack)/analisys-pack.zip
+      mv $(srcPack)/*.zip $(srcPack)/analisysPack.zip
       ls -la $(srcPack)
   displayName: 'Veracode Auto-Package'
 
