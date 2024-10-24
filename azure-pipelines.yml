@@ -21,7 +21,9 @@ steps:
   inputs:
     script: |
       curl -fsS https://tools.veracode.com/veracode-cli/install | sh
-      veracode package --source . --output $(caminhoPacote) --trust --debug
+      export PATH="/home/vsts/work/1/s/:$PATH"
+      veracode configure --api-id "$(APIID)" --secret-key "$(APIKEY)"
+      veracode package --source . --output $(caminhoPacote) --trust
   displayName: 'Veracode Auto-Package'
 
 - task: CmdLine@2
