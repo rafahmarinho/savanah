@@ -8,9 +8,10 @@ variables:
   - group: 'Veracode Api Key'
   - name: veracodeAppProfile
     value: '$(Build.DefinitionName)'
-  - name: caminhoPacote
+  - name: srcPack
     value: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)'
-
+  - name: analisysPack
+    value: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)/analisysPack.zip'
 steps:
 - task: CmdLine@2
   inputs:
@@ -22,7 +23,8 @@ steps:
     script: |
       curl -fsS https://tools.veracode.com/veracode-cli/install | sh
       export PATH="/home/vsts/work/1/s/:$PATH"
-      veracode package --source . --output $(caminhoPacote) --trust
+      veracode package --source . --output $(srcPack) --trust
+      mv $(srcPack)/*zip $(srcPack)/analisys-pack.zip
   displayName: 'Veracode Auto-Package'
 
 - task: CmdLine@2
@@ -50,7 +52,7 @@ steps:
     destinationFolder: '$(Build.ArtifactStagingDirectory)'
     cleanDestinationFolder: false
 - script: |
-      java -jar $(Build.ArtifactStagingDirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --file '$(caminhoPacote)/veracode-auto-pack-s-js.zip' --issue_details true 
+      java -jar $(Build.ArtifactStagingDirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --file '$(analisysPack)' --issue_details true 
   displayName: 'Veracode PipelineScan'
   continueOnError: true
 
@@ -61,11 +63,9 @@ steps:
     apiKey: '$(APIKEY)'
     veracodeAppProfile: '$(veracodeAppProfile)'
     version: '$(build.buildNumber)'
-    filepath: '$(caminhoPacote)/veracode-auto-pack-s-js.zip'
+    filepath: '$(analisysPack)'
     createSandBox: false
     createProfile: true
-    failTheBuildIfVeracodeScanDidNotInitiate: false
-    scanStatusCheckInterval: '60'
     importResults: true
     failBuildOnPolicyFail: false
   displayName: 'Veracode SAST'
