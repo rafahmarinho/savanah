@@ -15,35 +15,39 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      export SRCCLR_API_TOKEN=$(SRCCLR_API_TOKEN)
-      curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan --update-advisor --allow-dirty
-  displayName: 'Veracode SCA'
-  continueOnError: true
+      npm install -g @veracode/veracode-packager
+  displayName: 'Install Veracode Packager'
 
 - task: CmdLine@2
   inputs:
     script: 'npm install'
   displayName: 'NPM'
 
-- task: DeleteFiles@1
-  displayName: 'Removendo arquivos desnecessários'
+- task: CmdLine@2
   inputs:
-    SourceFolder: '$(Agent.BuildDirectory)'
-    Contents: |
-      public/**
-      node_modules/**
-- task: ArchiveFiles@2
+    script: |
+      veracode package --source $(System.DefaultWorkingDirectory) --output $(caminhoPacote) --trust
+  displayName: 'Veracode Auto-Package'
+
+- task: CmdLine@2
   inputs:
-    rootFolderOrFile: '$(Agent.BuildDirectory)'
-    includeRootFolder: true
-    archiveType: 'zip'
-    archiveFile: '$(caminhoPacote)'
-    replaceExistingArchive: true
-  displayName: 'Criando pacote para analise'
+    script: |
+      export SRCCLR_API_TOKEN=$(SRCCLR_API_TOKEN)
+      curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan --update-advisor --allow-dirty
+  displayName: 'Veracode SCA'
+  continueOnError: true
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(caminhoPacote)'
+    ArtifactName: 'VeracodeArtifact'
+    publishLocation: 'Container'
+  displayName: 'Publish Artifact for Veracode Scan'
 
 - script: |
     curl -O -L https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
   displayName: 'Download Pipeline Scanner'
+
 - task: ExtractFiles@1
   inputs:
     archiveFilePatterns: 'pipeline-scan-LATEST.zip'
@@ -54,8 +58,6 @@ steps:
   displayName: 'Veracode PipelineScan'
   continueOnError: true
 
-
-  
 - task: Veracode@3
   inputs:
     ConnectionDetailsSelection: 'Credentials'
